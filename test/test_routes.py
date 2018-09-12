@@ -37,5 +37,3 @@ def test_post():
     r = requests.post(url, json=payload, headers=headers)
     assert r.status_code == 200
     assert r.text == 'OK'
-
-
