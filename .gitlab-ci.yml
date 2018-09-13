@@ -3,10 +3,7 @@ image: registry.gitlab.com/christiantragesser/dind-py:latest
 variables:
     DOCKER_DRIVER: overlay2
     LOCAL_TAG: local/yadi
-    EXT_TAG: $CI_REGISTRY/christiantragesser/yadi
-    VERSIONS:
-      - latest
-      - $CI_COMMIT_SHA
+    EXT_TAG: $CI_REGISTRY/christiantragesser/yadi-py
     
 services:
 - docker:stable-dind
@@ -17,11 +14,12 @@ stages:
 test:
   stage: test
   script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - echo "$CI_COMMIT_SHA" > $CI_PROJECT_DIR/GIT_SHA
     - $CI_PROJECT_DIR/ci.py test
     - $CI_PROJECT_DIR/ci.py scan
-    - for i in $VERSIONS; do docker tag $LOCAL_TAG ${EXT_TAG}:$i; done 
-    - for i in $VERSIONS; do docker push ${EXT_TAG}:$i | grep -e "The push refers to" -e latest; done 
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker tag $LOCAL_TAG ${EXT_TAG}:latest 
+    - docker push ${EXT_TAG}:latest | grep -e "The push refers to" -e latest
   only:
     - master
   artifacts:
