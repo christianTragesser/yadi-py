@@ -38,12 +38,14 @@ def securityScan():
 
 def local():
     print('Initializing locally built instance:')
+    port = { 5000: 5000 }
     pipeline.buildImage(dirPath,localTag)
-    pipeline.runContainerDetached(image=localTag, name='yadi')
+    pipeline.runContainerDetached(image=localTag, ports=port, name='yadi')
 
 def qa():
     print('Starting yadi:')
-    pipeline.runContainerDetached(image=latestTag, name='yadi')
+    port = { 5000: 5000 }
+    pipeline.runContainerDetached(image=latestTag, ports=port, name='yadi')
 
 def main():
     parser = ArgumentParser(prog='ci-py')
