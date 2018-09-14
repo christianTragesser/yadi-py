@@ -27,7 +27,7 @@ def test():
     print('Starting tests:')
     pipeline.buildImage(dirPath, localTag)
     cleanMe.append(pipeline.runContainerDetached(image=localTag, name='yadi'))
-    pipeline.runContainerInteractive(image='registry.gitlab.com/christiantragesser/dind-py:latest',
+    pipeline.runContainerInteractive(image='registry.gitlab.com/christiantragesser/dind-py:3',
                                      name='yadi-test', working_dir=testDir, volumes=volumes, command='pytest')
     pipeline.purgeContainers(cleanMe)
     print('Testing complete')
