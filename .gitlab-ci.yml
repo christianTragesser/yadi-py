@@ -1,4 +1,4 @@
-image: registry.gitlab.com/christiantragesser/dind-py:latest
+image: registry.gitlab.com/christiantragesser/dind-py:3
 
 variables:
     DOCKER_DRIVER: overlay2
