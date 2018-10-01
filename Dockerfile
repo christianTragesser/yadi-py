@@ -1,10 +1,16 @@
-FROM python:3.7-alpine
+FROM python:3-alpine
 
-RUN pip install flask --no-cache-dir
+RUN pip install flask --no-cache-dir && \
+    addgroup -S -g 2222 yadi && \
+    adduser -S -u 2222 -g yadi yadi
+    
+COPY main.py GIT_* /
+
+RUN chmod 755 /main.py
+
+USER yadi
 
 ENV FLASK_APP=/main.py
-
-COPY main.py GIT_* /
 
 EXPOSE 5000
 
