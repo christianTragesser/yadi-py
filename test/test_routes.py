@@ -2,6 +2,8 @@ import pytest
 import requests
 import json
 
+# UAT tests for simple flask routes.
+
 host = 'yadi'
 port = '5000'
 
@@ -25,9 +27,8 @@ def test_get_status():
     path = '/status'
     url = 'http://{0:s}:{1:s}{2:s}'.format(host, port, path)
     r = requests.get(url)
-    data = json.loads(r.text)
     assert r.status_code == 200
-    assert data['path'] == '/webhook'
+    assert r.json() == {"sha": "non-pipeline build", "path": "/webhook"}
 
 def test_post():
     path = '/webhook'

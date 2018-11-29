@@ -1,4 +1,4 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, Response
 import json
 import os
 
@@ -6,6 +6,7 @@ app = Flask(__name__)
 postPath = '/'+os.environ['POST_PATH'] if 'POST_PATH' in os.environ else '/webhook'
 versionFile = '/GIT_SHA'
 
+# Read in version file provided by automated pipeline
 if os.path.exists(versionFile):
     shaFile = open(versionFile, 'r')
     gitSHA = shaFile.read()
@@ -23,14 +24,16 @@ def route_root():
     else:
         abort(404)
 
+# Provide git SHA and configured POST method path on http request
 @app.route('/status')
 def route_status():
     currentStatus = {
         'sha': gitSHA,
         'path': postPath
     }
-    return json.dumps(currentStatus)+'\n'
+    return Response(json.dumps(currentStatus), mimetype='application/json')
 
+# Print received POST headers and json payload
 @app.route(postPath, methods=['POST'])
 def route_post():
    data = json.loads(request.data)
