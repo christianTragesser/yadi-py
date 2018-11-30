@@ -1,6 +1,7 @@
 import pytest
 import requests
 import json
+import os
 
 # UAT tests for simple flask routes.
 
@@ -26,9 +27,20 @@ def test_get_root_with_headers():
 def test_get_status():
     path = '/status'
     url = 'http://{0:s}:{1:s}{2:s}'.format(host, port, path)
+    # Read in version file provided by automated pipeline
+    versionFile = '../GIT_SHA'
+    if os.path.exists(versionFile):
+        shaFile = open(versionFile, 'r')
+        gitSHA = shaFile.read()
+        gitSHA = gitSHA.replace('\n', '')
+        shaFile.close()
+    else:
+        gitSHA = 'non-pipeline build'
+    expected_status = {"sha": gitSHA, "path": "/webhook"}
+
     r = requests.get(url)
     assert r.status_code == 200
-    assert r.json() == {"sha": "non-pipeline build", "path": "/webhook"}
+    assert json.dumps(r.json()) == json.dumps(expected_status)
 
 def test_post():
     path = '/webhook'
