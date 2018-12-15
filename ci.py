@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import os
 from argparse import ArgumentParser
-from dind import Pipeline
+from pyplineCI import Pipeline
 
 dirPath = os.path.dirname(os.path.realpath(__file__))
 pipeline = Pipeline(dockerRegistry='registry.gitlab.com/christiantragesser')
@@ -26,8 +26,8 @@ def test():
     cleanMe = []
     print('Starting tests:')
     pipeline.buildImage(dirPath, localTag)
-    cleanMe.append(pipeline.runContainerDetached(image=localTag, name='yadi'))
-    pipeline.runContainerInteractive(image='registry.gitlab.com/christiantragesser/dind-py:3',
+    cleanMe.append(pipeline.runD(image=localTag, name='yadi'))
+    pipeline.runI(image='registry.gitlab.com/christiantragesser/pypline-ci:3',
                                      name='yadi-test', working_dir=testDir, volumes=volumes, command='pytest')
     pipeline.purgeContainers(cleanMe)
     print('Testing complete')
@@ -40,12 +40,12 @@ def local():
     print('Initializing locally built instance:')
     port = { 5000: 5000 }
     pipeline.buildImage(dirPath,localTag)
-    pipeline.runContainerDetached(image=localTag, ports=port, name='yadi')
+    pipeline.runD(image=localTag, ports=port, name='yadi')
 
 def qa():
     print('Starting yadi:')
     port = { 5000: 5000 }
-    pipeline.runContainerDetached(image=latestTag, ports=port, name='yadi')
+    pipeline.runD(image=latestTag, ports=port, name='yadi')
 
 def main():
     parser = ArgumentParser(prog='ci-py')
